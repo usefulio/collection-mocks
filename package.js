@@ -1,12 +1,8 @@
 Package.describe({
   name: 'useful:collection-mocks',
   version: '0.0.1',
-  // Brief, one-line summary of the package.
-  summary: '',
-  // URL to the Git repository containing the source code for this package.
-  git: '',
-  // By default, Meteor will default to using README.md for documentation.
-  // To avoid submitting documentation, set this field to null.
+  summary: 'Adds a method to Mongo.Collection\'s prototype that mocks the results of a db operation',
+  git: 'https://github.com/usefulio/meteor-collection-mocks.git',
   documentation: 'README.md'
 });
 
