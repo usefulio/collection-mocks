@@ -70,8 +70,9 @@ Mongo.Collection.prototype.mock = function (insert, update, find) {
  * @method mockMulti
  * @memberOf Mongo.Collection
  * @param {Array} insert An array of arguments to be passed to the mockCollection's insert method
- * @param {Array} update An array of arguments to be passed to the mockCollection's update method
- * @param {Array} find An array of arguments to be passed to the mockCollection's findOne method
+ * @param {Object | Array} update An array of arguments to be passed to the mockCollection's update method
+ * @param {Object} flags An object to be passed to the mockCollection's update method (e.g. { multi: true })
+ * @param {Object | Array} find An array of arguments to be passed to the mockCollection's find method
  * @return {Object} The result of findOne
  */
 // XXX should we merge mockMulti with mock since there is a lot of overlapping code?
