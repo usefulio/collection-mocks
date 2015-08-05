@@ -8,12 +8,10 @@ var mockCollection = new Mongo.Collection(null);
  * @locus Anywhere
  * @method mock
  * @memberOf Mongo.Collection
- * @param {Object} insert An array of arguments to be passed to the mockCollection's insert method
- * @param {Object} update An array of arguments to be passed to the mockCollection's update method
- * @param {Object} find An array of arguments to be passed to the mockCollection's findOne method
+ * @param {Object | Array} insert An array of arguments to be passed to the mockCollection's insert method
+ * @param {Object | Array} update An array of arguments to be passed to the mockCollection's update method
+ * @param {Object | Array} find An array of arguments to be passed to the mockCollection's findOne method
  * @return {Object} The result of findOne
- *
- * XXX Should the params be documented as MongoSelector instead?
  */
 Mongo.Collection.prototype.mock = function (insert, update, find) {
   var self = this;
