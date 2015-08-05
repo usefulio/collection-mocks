@@ -76,7 +76,7 @@ Mongo.Collection.prototype.mock = function (insert, update, find) {
  * @return {Object} The result of findOne
  */
 // XXX should we merge mockMulti with mock since there is a lot of overlapping code?
-Mongo.Collection.prototype.mockMulti = function (insert, update, flags, find) {
+Mongo.Collection.prototype.mockMulti = function (insert, update, find) {
   var self = this;
 
   // clear out the mock collection in case any previous calls failed to clean
@@ -88,7 +88,7 @@ Mongo.Collection.prototype.mockMulti = function (insert, update, flags, find) {
   if (! insert) {
     if (! _.isArray(update))
       throw new Error("implicit insert requires two update arguments");
-    insert = self.findOne(update[0]);
+    insert = self.find(update[0]).fetch();
   }
   
   // insert is actually the array of arguments to be passed to the
@@ -102,10 +102,11 @@ Mongo.Collection.prototype.mockMulti = function (insert, update, flags, find) {
   var insertResults = [];
   if (insert && insert[0]) {
     // bulk insert does not work in meteor so we need to save all the inserted documents
-    _.each(insert, function(doc) { 
-      // the doc needs to be passed to insert as an array
-      insertResults.push(mockCollection.insert.apply(mockCollection, [doc]));
-    })
+    _.each(insert, function(args) {
+      if (!_.isArray(args))
+        args = [args];
+      insertResults.push(mockCollection.insert.apply(mockCollection, args));
+    });
   }
 
   // since there are more than 1 documents inserted we will use the $in operator to construct our selector
@@ -115,12 +116,7 @@ Mongo.Collection.prototype.mockMulti = function (insert, update, flags, find) {
   // update method; we use the insertResults array as the query selector
   if (update) {
     if (! _.isArray(update)) {
-      update = [insertResult, update];
-      // if we have a valid flags argument we should pass it to the update method
-      // XXX should we just give the app developer the option to pass a boolean 'multi' param instead?
-      if (flags) {
-        update.push(flags);
-      }
+      throw new Error("mockMulti requires an array for the update argument");
     }
     mockCollection.update.apply(mockCollection, update);
   }
