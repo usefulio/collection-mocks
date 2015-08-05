@@ -63,3 +63,78 @@ Mongo.Collection.prototype.mock = function (insert, update, find) {
   // return the results of the findOne method
   return findResult;
 };
+
+/**
+ * @summary The mockMulti method. It differs from mock in that the insert operation accepts an array, and the find operation returns find().fetch()
+ * @locus Anywhere
+ * @method mockMulti
+ * @memberOf Mongo.Collection
+ * @param {Array} insert An array of arguments to be passed to the mockCollection's insert method
+ * @param {Array} update An array of arguments to be passed to the mockCollection's update method
+ * @param {Array} find An array of arguments to be passed to the mockCollection's findOne method
+ * @return {Object} The result of findOne
+ */
+// XXX should we merge mockMulti with mock since there is a lot of overlapping code?
+Mongo.Collection.prototype.mockMulti = function (insert, update, flags, find) {
+  var self = this;
+
+  // clear out the mock collection in case any previous calls failed to clean
+  // up after themselves
+  mockCollection.remove({});
+  
+  // if the user doesn't pass an insert argument, lets try to find the document
+  // they're trying to update by searching the real collection (self)
+  if (! insert) {
+    if (! _.isArray(update))
+      throw new Error("implicit insert requires two update arguments");
+    insert = self.findOne(update[0]);
+  }
+  
+  // insert is actually the array of arguments to be passed to the
+  // insert method, but we don't want to force users to call mock with
+  // an array if they don't want to
+  if (! _.isArray(insert)) {
+    insert = [insert];
+  }
+
+  // insert the documents into the mock collection
+  var insertResults = [];
+  if (insert && insert[0]) {
+    // bulk insert does not work in meteor so we need to save all the inserted documents
+    _.each(insert, function(doc) { 
+      // the doc needs to be passed to insert as an array
+      insertResults.push(mockCollection.insert.apply(mockCollection, [doc]));
+    })
+  }
+
+  // since there are more than 1 documents inserted we will use the $in operator to construct our selector
+  var insertResult = { _id: { $in: insertResults } };
+
+  // just like insert, update is the array of arguments that we pass to the
+  // update method; we use the insertResults array as the query selector
+  if (update) {
+    if (! _.isArray(update)) {
+      update = [insertResult, update];
+      // if we have a valid flags argument we should pass it to the update method
+      // XXX should we just give the app developer the option to pass a boolean 'multi' param instead?
+      if (flags) {
+        update.push(flags);
+      }
+    }
+    mockCollection.update.apply(mockCollection, update);
+  }
+
+  // use the document we just inserted if no find argument exists
+  if (! find) find = insertResult;
+
+  // Make sure we pass an array to find
+  if (! _.isArray(find)) {
+    find = [find];
+  }
+
+  // find the document in the mock collection
+  var findResult = mockCollection.find.apply(mockCollection, find).fetch();
+
+  // return the fetched results
+  return findResult;
+};
