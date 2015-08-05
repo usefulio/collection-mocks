@@ -2,7 +2,7 @@ Package.describe({
   name: 'useful:collection-mocks',
   version: '0.0.1',
   summary: 'Adds a method to Mongo.Collection\'s prototype that mocks the results of a db operation',
-  git: 'https://github.com/usefulio/meteor-collection-mocks.git',
+  git: 'https://github.com/usefulio/collection-mocks.git',
   documentation: 'README.md'
 });
 
