@@ -15,6 +15,8 @@ Package.onUse(function(api) {
 
 Package.onTest(function(api) {
   api.use('tinytest');
+  api.use('mongo');
+  
   api.use('useful:collection-mocks');
   api.addFiles('collection-mocks-tests.js');
 });
