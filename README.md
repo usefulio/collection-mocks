@@ -5,6 +5,11 @@ This package adds a method to Mongo.Collection's prototype that mocks the result
 ### Installation
 Simply add the `useful:collection-mocks` package to your meteor app and you can start using the `mock` and `mockMulti` methods on your collections.
 
+The `mock` method is attached to `Mongo.Collection.prototype` which means that you can access it from any of your collections, e.g. `Books.mock`, and the mock method will be able to access your collection, if need be.
+
+### Your Collections
+The `mock` and `mockMulti` methods access your collection only to read existing data & only if you don't pass an insert argument.
+
 ### Examples
 ```
 Books.mock({name: 'Leave it to Jeeves'}, {$set: {author: 'PGWoodhouse'}}) 
