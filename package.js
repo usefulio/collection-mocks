@@ -9,6 +9,7 @@ Package.describe({
 Package.onUse(function(api) {
   api.versionsFrom('1.2.1');
   api.use('mongo');
+  api.use('underscore');
 
   api.addFiles('collection-mocks.js');
 });
@@ -16,6 +17,7 @@ Package.onUse(function(api) {
 Package.onTest(function(api) {
   api.use('tinytest');
   api.use('mongo');
+  api.use('underscore');
   
   api.use('useful:collection-mocks');
   api.addFiles('collection-mocks-tests.js');
